@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: Copyright (c) 2023 Dario Cammi
+#
+# SPDX-License-Identifier: MIT
+
+Adafruit-Blinka
+adafruit-circuitpython-busdevice

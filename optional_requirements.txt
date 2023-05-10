@@ -1,0 +1,3 @@
+# SPDX-FileCopyrightText: 2023 Dario Cammi
+#
+# SPDX-License-Identifier: Unlicense

@@ -28,6 +28,7 @@ from micropython import const
 
 try:
     import busio
+    from typing import Tuple
 except ImportError:
     pass
 
@@ -289,7 +290,7 @@ class AXP192:
         return -144.7 + 0.1 * self._read_register12(0x5E)
 
     @property
-    def power_key_was_pressed(self) -> (bool, bool):
+    def power_key_was_pressed(self) -> Tuple[bool, bool]:
         """Power key pressed status
 
         :returns: Two booleans: Power key is short press and power key is long press
@@ -395,7 +396,7 @@ class AXP192:
             self._write_register8(voltage_reg, reg_value)
             self._set_bit_in_register(_AXP192_DCDC13_LDO23_CTRL, enable_bit)
 
-    def __get_dcdcx_registers(self, num: int) -> tuple(int, int, int):
+    def __get_dcdcx_registers(self, num: int) -> Tuple[int, int, int]:
         if num == 1:
             return (_AXP192_DCDC13_LDO23_CTRL_DCDC1, _AXP192_DCDC1_OUT_VOLTAGE, 0x7F)
         if num == 2:
@@ -477,7 +478,7 @@ class AXP192:
             self._write_register8(_AXP192_LDO23_OUT_VOLTAGE, reg_val)
             self._set_bit_in_register(_AXP192_DCDC13_LDO23_CTRL, enable_bit)
 
-    def __get_ldo23_registers(self, num: int) -> tuple(int, int):
+    def __get_ldo23_registers(self, num: int) -> Tuple[int, int]:
         if num == 2:
             return (_AXP192_DCDC13_LDO23_CTRL_LDO2, 4)
         if num == 3:

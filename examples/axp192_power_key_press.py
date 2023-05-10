@@ -10,10 +10,12 @@ i2c = board.I2C()
 pmic = AXP192(i2c)
 
 while True:
-    if pmic.is_battery_connected:
-        battery_voltage = pmic.battery_voltage
-        print(f"Battery voltage {battery_voltage}V")
+    short_press, long_press = pmic.power_key_was_pressed
+    if short_press:
+        print("Power key was short pressed")
+    elif long_press:
+        print("Power key was long pressed")
     else:
-        print("No battery connected")
+        print("Power key isn't press")
 
     time.sleep(1)

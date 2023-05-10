@@ -36,35 +36,7 @@ Please ensure all dependencies are available on the CircuitPython filesystem.
 This is easily achieved by downloading
 `the Adafruit library and driver bundle <https://circuitpython.org/libraries>`_
 or individual libraries can be installed using
-`circup <https://github.com/adafruit/circup>`_.Installing from PyPI
-=====================
-.. note:: This library is not available on PyPI yet. Install documentation is included
-   as a standard element. Stay tuned for PyPI availability!
-
-.. todo:: Remove the above note if PyPI version is/will be available at time of release.
-
-On supported GNU/Linux systems like the Raspberry Pi, you can install the driver locally `from
-PyPI <https://pypi.org/project/circuitpython-axp192/>`_.
-To install for current user:
-
-.. code-block:: shell
-
-    pip3 install circuitpython-axp192
-
-To install system-wide (this may be required in some cases):
-
-.. code-block:: shell
-
-    sudo pip3 install circuitpython-axp192
-
-To install in a virtual environment in your current project:
-
-.. code-block:: shell
-
-    mkdir project-name && cd project-name
-    python3 -m venv .venv
-    source .env/bin/activate
-    pip3 install circuitpython-axp192
+`circup <https://github.com/adafruit/circup>`_.
 
 Installing to a Connected CircuitPython Device with Circup
 ==========================================================
@@ -92,8 +64,23 @@ Or the following command to update an existing version:
 Usage Example
 =============
 
-.. todo:: Add a quick, simple example. It and other examples should live in the
-examples folder and be included in docs/examples.rst.
+A simple example that check if a battery is connected to AXP192 and shows battery voltage:
+
+.. code-block:: python
+
+    import board
+    from axp192 import AXP192
+
+    i2c = board.I2C()
+    pmic = AXP192(i2c)
+
+    if pmic.is_battery_connected:
+        battery_voltage = pmic.battery_voltage
+        print(f"Battery voltage {battery_voltage}V")
+    else:
+        print("No battery connected")
+
+More examples are available in the examples folder
 
 Documentation
 =============

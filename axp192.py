@@ -135,33 +135,48 @@ class AXP192:
 
     @property
     def acin_voltage(self) -> float:
-        """ACIN voltage in V"""
+        """ACIN line actual voltage in V
+
+        In order to be able to read this voltage ADCs must be enable via :py:attr:`all_adc_enabled`
+        """
         return 1.7 * self._read_register12(0x56) / 1000.0
 
     @property
     def acin_current(self) -> float:
-        """ACIN current in mA"""
+        """ACIN input line actual current in mA
+
+        In order to be able to read this current ADCs must be enable via :py:attr:`all_adc_enabled`
+        """
         return 0.625 * self._read_register12(0x58)
 
     @property
     def is_vbus_present(self) -> bool:
-        """True when voltage is present on the VBUS input line"""
+        """True when voltage is present on the VBUS power input line"""
         reg_val = self._read_register8(_AXP192_INPUT_POWER_STATE)
         return (reg_val & _AXP192_INPUT_POWER_STATE_VBUS_IS_PRESENT) != 0
 
     @property
     def vbus_voltage(self) -> float:
-        """VBUS voltage in V"""
+        """VBUS input line actual voltage in V
+
+        In order to be able to read this voltage ADCs must be enable via :py:attr:`all_adc_enabled`
+        """
         return 1.7 * self._read_register12(0x5A) / 1000.0
 
     @property
     def vbus_current(self) -> float:
-        """VBUS current in mA"""
+        """VBUS power input line actual current in mA
+
+        In order to be able to read this current ADCs must be enable via :py:attr:`all_adc_enabled`
+        """
         return 0.375 * self._read_register12(0x5C)
 
     @property
     def aps_voltage(self) -> float:
-        """APS voltage in V"""
+        """APS (internal power supply) actual voltage in V
+
+        In order to be able to read this voltage ADCs must be enable via :py:attr:`all_adc_enabled`
+        """
         return 1.4 * self._read_register12(0x7E) / 1000.0
 
     @property
@@ -172,13 +187,13 @@ class AXP192:
 
     @property
     def is_battery_charging(self) -> bool:
-        """True when the battery is charging"""
+        """True when the battery is connected to AXP192 and is charging"""
         reg_val = self._read_register8(_AXP192_POWER_CHARGE_STATUS)
         return (reg_val & _AXP192_POWER_CHARGE_STATUS_CHARGING) != 0
 
     @property
     def battery_charging_enabled(self) -> bool:
-        """Enable/disable the tattery charging"""
+        """Enable/disable the battery charging"""
         reg_val = self._read_register8(_AXP192_CHARGING_CTRL1)
         return (reg_val & _AXP192_CHARGING_CTRL1_ENABLE) != 0
 
@@ -198,27 +213,47 @@ class AXP192:
 
     @property
     def battery_voltage(self) -> float:
-        """Battery voltage in V"""
+        """Battery voltage in V
+
+        In order to be able to read this voltage ADCs must be enable via :py:attr:`all_adc_enabled`
+        Return 0 if no battery is connected to AXP192
+        """
         return 0.0011 * self._read_register12(0x78)
 
     @property
     def battery_charge_current(self) -> float:
-        """Battery charging current in mA"""
+        """Battery charging current in mA
+
+        In order to be able to read this current ADCs must be enable via :py:attr:`all_adc_enabled`
+        Return 0 if no battery is connected to AXP192
+        """
         return 0.5 * self._read_register12(0x7A)
 
     @property
     def battery_discharge_current(self) -> float:
-        """Battery discharging current in mA"""
+        """Battery discharging current in mA
+
+        In order to be able to read this current ADCs must be enable via :py:attr:`all_adc_enabled`
+        Return 0 if no battery is connected to AXP192
+        """
         return 0.5 * self._read_register12(0x7C)
 
     @property
     def battery_ouput_power(self) -> float:
-        """Battery istantaneous ouput power in W"""
+        """Battery istantaneous ouput power in mW
+
+        In order to be able to read this power ADCs must be enable via :py:attr:`all_adc_enabled`
+        Return 0 if no battery is connected to AXP192
+        """
         return 1.1 * 0.5 * self._read_register24(0x70) / 1000
 
     @property
     def battery_level(self) -> float:
-        """Battery level in range 0-100%"""
+        """Battery level in range 0-100%
+
+        In order to be able to read this power ADCs must be enable via :py:attr:`all_adc_enabled`
+        Return 0 if no battery is connected to AXP192
+        """
         bat_voltage = self.battery_voltage
         bat_chg_current = self.battery_charge_current
         vmin = self.battery_switch_off_voltage
@@ -258,25 +293,27 @@ class AXP192:
     def all_adc_enabled(self) -> bool:
         """Enable/disable all AXP192 ADCs of register 0x82
 
-        +-----------------------+
-        | Register 0x82 ADCs    |
-        +=======================+
-        | Battery voltage ADC   |
-        +-----------------------+
-        | Battery current ADC   |
-        +-----------------------+
-        | ACIN voltage ADC      |
-        +-----------------------+
-        | ACIN Current ADC      |
-        +-----------------------+
-        | VBUS voltage ADC      |
-        +-----------------------+
-        | VBUS Current ADC      |
-        +-----------------------+
-        | APS Voltage ADC       |
-        +-----------------------+
-        | TS pin ADC function   |
-        +-----------------------+
+        +-----------------------+------------------------------------------+
+        | Register 0x82 ADCs    | AXP192 Property                          |
+        +=======================+==========================================+
+        | Battery voltage ADC   | :py:attr:`battery_voltage`               |
+        +-----------------------+------------------------------------------+
+        | Battery current ADC   | :py:attr:`battery_charge_current`        |
+        |                       |                                          |
+        |                       | :py:attr:`battery_discharge_current`     |
+        +-----------------------+------------------------------------------+
+        | ACIN voltage ADC      | :py:attr:`acin_voltage`                  |
+        +-----------------------+------------------------------------------+
+        | ACIN Current ADC      | :py:attr:`acin_current`                  |
+        +-----------------------+------------------------------------------+
+        | VBUS voltage ADC      | :py:attr:`vbus_voltage`                  |
+        +-----------------------+------------------------------------------+
+        | VBUS Current ADC      | :py:attr:`vbus_current`                  |
+        +-----------------------+------------------------------------------+
+        | APS Voltage ADC       | :py:attr:`aps_voltage`                   |
+        +-----------------------+------------------------------------------+
+        | TS pin ADC function   |                                          |
+        +-----------------------+------------------------------------------+
         """
         return self._read_register8(_AXP192_ADC_ENABLE_1) == 0xFF
 
@@ -294,7 +331,6 @@ class AXP192:
         """Power key pressed status
 
         :returns: Two booleans: Power key is short press and power key is long press
-        :rtype: tuple(bool, bool)
         """
         reg_val = self._read_register8(_AXP192_IRQ_3_STATUS)
         short_press = (reg_val & _AXP192_IRQ_3_STATUS_PEK_SHORT_PRESS) != 0
@@ -504,7 +540,6 @@ class AXP192:
 
         :param int gpio_num: Number of the GPIO to check. Allowed values: 0, 1 or 2
         :returns: True is the GPIO is in floating pin mode
-        :rtype: bool
         """
         self.__validate_gpio_num(gpio_num)
         if 0 <= gpio_num <= 2:
@@ -530,7 +565,6 @@ class AXP192:
 
         :param int gpio_num: Number of the GPIO to check. Allowed values: 0, 1 or 2
         :returns: True is the GPIO is in low output mode
-        :rtype: bool
         """
         self.__validate_gpio_num(gpio_num)
         if 0 <= gpio_num <= 2:
@@ -569,7 +603,6 @@ class AXP192:
 
         :param int gpio_num: Number of the GPIO to check. Allowed value: 0
         :returns: GPIO output voltage in V
-        :rtype: float
         """
         if not self._is_gpio_ldo_voltage_out(gpio_num):
             return 0
@@ -586,7 +619,6 @@ class AXP192:
 
         :param int gpio_num: Number of the GPIO to check. Allowed value: 0
         :returns: True when GPIO is in LDO voltage output mode
-        :rtype: bool
         """
         self.__validate_gpio_num(gpio_num)
         if gpio_num == 0:
@@ -627,7 +659,6 @@ class AXP192:
 
         :param int gpio_num: Number of the GPIO to check. Allowed values: 1, 2
         :returns: PWM duty_cyle in range 0-255. Returns 0 if the GPIO isn't in PWM output mode
-        :rtype: int
         """
         self.__validate_gpio_num(gpio_num)
         if 1 <= gpio_num <= 2:
@@ -646,7 +677,6 @@ class AXP192:
 
         :param int gpio_num: Number of the GPIO to check. Allowed values: 1, 2
         :returns: True when GPIO is in PWM output mode
-        :rtype: bool
         """
         self.__validate_gpio_num(gpio_num)
         if 1 <= gpio_num <= 2:
@@ -732,7 +762,6 @@ class AXP192:
 
         :param int register: Register number. Allowed range: 0-255
         :returns: The register value
-        :rtype: int
         """
         in_buf = bytearray(1)
         out_buf = bytearray(1)
@@ -749,7 +778,6 @@ class AXP192:
 
         :param int register: Register number. Allowed range: 0-255
         :returns: The register value
-        :rtype: int
         """
         in_buf = bytearray(2)
         out_buf = bytearray(1)
@@ -766,7 +794,6 @@ class AXP192:
 
         :param int register: Register number. Allowed range: 0-255
         :returns: The register value
-        :rtype: int
         """
         in_buf = bytearray(3)
         out_buf = bytearray(1)

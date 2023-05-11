@@ -97,7 +97,7 @@ class AXP192:
     should expose a property to control the DCDC3 brightness
 
     :param ~busio.I2C i2c: The I2C bus AXP192 is connected to
-    :param int device_address: The I2C bus addres. Default to `0x34`
+    :param int device_address: The I2C bus addres. Default to 0x34
 
     **Quickstart: Importing and using the device**
 
@@ -286,7 +286,7 @@ class AXP192:
 
     @property
     def internal_temperature(self) -> float:
-        """Internal AXP192 temperature in Celsius degree"""
+        """Internal AXP192 temperature in Celsius degrees"""
         return -144.7 + 0.1 * self._read_register12(0x5E)
 
     @property
@@ -294,7 +294,7 @@ class AXP192:
         """Power key pressed status
 
         :returns: Two booleans: Power key is short press and power key is long press
-        _rtype: tuple(bool, bool)
+        :rtype: tuple(bool, bool)
         """
         reg_val = self._read_register8(_AXP192_IRQ_3_STATUS)
         short_press = (reg_val & _AXP192_IRQ_3_STATUS_PEK_SHORT_PRESS) != 0

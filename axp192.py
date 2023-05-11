@@ -600,7 +600,7 @@ class AXP192:
         PWM Output voltage is VINT (2.5V)
 
         :param int gpio_num: Number of the GPIO to set as PWM output. Allowed values: 1 or 2
-        :param int duty_cyle = PWM duty cycle. Range 0-255
+        :param int duty_cyle: PWM duty cycle. Range 0-255
         """
         self.__validate_gpio_num(gpio_num)
         if 1 <= gpio_num <= 2:
@@ -647,7 +647,6 @@ class AXP192:
         :param int gpio_num: Number of the GPIO to check. Allowed values: 1, 2
         :returns: True when GPIO is in PWM output mode
         :rtype: bool
-
         """
         self.__validate_gpio_num(gpio_num)
         if 1 <= gpio_num <= 2:

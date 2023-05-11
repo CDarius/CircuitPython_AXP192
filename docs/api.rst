@@ -6,3 +6,5 @@
 
 .. automodule:: axp192
     :members:
+    :private-members:
+    :no-undoc-members:
